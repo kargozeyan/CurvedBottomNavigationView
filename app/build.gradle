@@ -1,7 +1,6 @@
 apply plugin: 'com.android.application'
-apply plugin: 'com.github.dcendents.android-maven'
-group = 'com.github.kargoz'
-version = '1.0.0'
+
+
 apply plugin: 'kotlin-android'
 
 apply plugin: 'kotlin-android-extensions'
