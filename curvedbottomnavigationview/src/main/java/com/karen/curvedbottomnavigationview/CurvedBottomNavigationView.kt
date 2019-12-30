@@ -17,7 +17,7 @@ import androidx.core.graphics.drawable.toDrawable
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 
 
-class UpCurvedBottomNavigationView @JvmOverloads constructor(
+class CurvedBottomNavigationView @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
     defStyleAttr: Int = 0
