@@ -11,13 +11,13 @@ import android.widget.ImageView
 import androidx.core.graphics.drawable.toDrawable
 
 
-class NavifartionItemView @JvmOverloads constructor(
+internal class NavigationItemView @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
     defStyleAttr: Int = 0,
-    var item: com.karen.curvedbottomnavigationview.NavigationItem
+    var item: NavigationItem
 ) : ImageView(context, attrs, defStyleAttr) {
-    /** Default values*/
+
     companion object {
         val defBackgroundColor = Color.WHITE.toDrawable()
         val defScaleType = ScaleType.CENTER_INSIDE
@@ -52,5 +52,12 @@ class NavifartionItemView @JvmOverloads constructor(
         } else {
             setImageDrawable(dr)
         }
+    }
+
+    fun setInactiveColor(color: Int) {
+        val newDrawable = drawable.constantState?.newDrawable()
+        newDrawable?.mutate()?.colorFilter = BlendModeColorFilter(color, BlendMode.SRC_ATOP)
+        dr = newDrawable!!
+        setImageDrawable(dr)
     }
 }

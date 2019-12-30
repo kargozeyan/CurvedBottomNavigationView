@@ -54,7 +54,7 @@ internal class UpCurveView @JvmOverloads constructor(
         val sEndPoint = PointF(w.toFloat(), h.toFloat())
 
         path.reset()
-        /** FIRST PART*/
+        /**Drawing FIRST PART*/
         path.moveTo(fStartPoint.x, fStartPoint.y)
         path.cubicTo(
             fControlPoint1.x, fControlPoint1.y,
@@ -63,7 +63,7 @@ internal class UpCurveView @JvmOverloads constructor(
         )
         path.lineTo(centerBottomPoint.x, centerBottomPoint.y)
         path.lineTo(fStartPoint.x, fStartPoint.y)
-        /** SECOND PART*/
+        /**Drawing SECOND PART*/
         path.moveTo(sStartPoint.x, sStartPoint.y)
         path.cubicTo(
             sControlPoint1.x, sControlPoint1.y,

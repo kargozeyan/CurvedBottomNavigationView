@@ -11,7 +11,8 @@ import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
 import android.widget.FrameLayout
 import android.widget.LinearLayout
 import android.widget.RelativeLayout
-import android.widget.Toast
+import androidx.annotation.ColorRes
+import androidx.annotation.DrawableRes
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.toDrawable
 import com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -22,10 +23,14 @@ class CurvedBottomNavigationView @JvmOverloads constructor(
     attrs: AttributeSet? = null,
     defStyleAttr: Int = 0
 ) : RelativeLayout(context, attrs, defStyleAttr) {
+    /** OnClick and ReClick listener*/
     private var listener: OnItemClickedListener? = null
-    private var clickedItem: NavifartionItemView? = null
+    /** Saving Clicked Item*/
+    private var clickedItem: NavigationItemView? = null
+    /** Saving Center Item Clicked State*/
     private var isCenterItemClicked = false
 
+    /** Constant values*/
     companion object {
         const val UP_CURVE_HEIGHT = 30
         const val BAR_HEIGHT = 60
@@ -46,24 +51,11 @@ class CurvedBottomNavigationView @JvmOverloads constructor(
                 setBackgroundColor(Color.WHITE)
             }
         }
-
-    private var leftPart: LinearLayout = LinearLayout(context).apply {
-        layoutParams =
-            LayoutParams(3 * resources.displayMetrics.widthPixels / 8, BAR_HEIGHT.dp).apply {
-                addRule(ALIGN_PARENT_BOTTOM, TRUE)
-                addRule(ALIGN_PARENT_START, TRUE)
-                background = Color.WHITE.toDrawable()
-            }
-        weightSum = 2f
-    }
-    private var rightPart: LinearLayout = LinearLayout(context).apply {
-        layoutParams =
-            LayoutParams(3 * resources.displayMetrics.widthPixels / 8, BAR_HEIGHT.dp).apply {
-                addRule(ALIGN_PARENT_BOTTOM, TRUE)
-                addRule(ALIGN_PARENT_END, TRUE)
-                background = Color.WHITE.toDrawable()
-            }
-        weightSum = 2f
+    private var centerSquare = View(context).apply {
+        layoutParams = FrameLayout.LayoutParams(MATCH_PARENT, BAR_HEIGHT.dp).apply {
+            gravity = Gravity.BOTTOM
+        }
+        background = Color.WHITE.toDrawable()
     }
     private var fab = FloatingActionButton(context).apply {
         layoutParams = FrameLayout.LayoutParams(FAB_RADIUS.dp, FAB_RADIUS.dp).apply {
@@ -88,32 +80,46 @@ class CurvedBottomNavigationView @JvmOverloads constructor(
         }
     }
 
+    /** Creating 3 parts of bar*/
+    private var leftPart: LinearLayout = LinearLayout(context).apply {
+        layoutParams =
+            LayoutParams(3 * resources.displayMetrics.widthPixels / 8, BAR_HEIGHT.dp).apply {
+                addRule(ALIGN_PARENT_BOTTOM, TRUE)
+                addRule(ALIGN_PARENT_START, TRUE)
+                background = Color.WHITE.toDrawable()
+            }
+        weightSum = 2f
+    }
+    private var rightPart: LinearLayout = LinearLayout(context).apply {
+        layoutParams =
+            LayoutParams(3 * resources.displayMetrics.widthPixels / 8, BAR_HEIGHT.dp).apply {
+                addRule(ALIGN_PARENT_BOTTOM, TRUE)
+                addRule(ALIGN_PARENT_END, TRUE)
+                background = Color.WHITE.toDrawable()
+            }
+        weightSum = 2f
+    }
     private var centerPart = FrameLayout(context).apply {
         layoutParams = LayoutParams(resources.displayMetrics.widthPixels / 4, MATCH_PARENT).apply {
             addRule(ALIGN_PARENT_BOTTOM, TRUE)
             addRule(CENTER_HORIZONTAL, TRUE)
-            addView(View(context).apply {
-                layoutParams = FrameLayout.LayoutParams(MATCH_PARENT, BAR_HEIGHT.dp).apply {
-                    gravity = Gravity.BOTTOM
-                }
-                background = Color.WHITE.toDrawable()
-            })
 
+            addView(centerSquare)
             addView(fab)
+
         }
     }
 
 
-    private var items: ArrayList<NavifartionItemView> =
-        ArrayList()
+    private var items: ArrayList<NavigationItemView> = ArrayList()
 
     init {
         addView(upCurve)
         addView(leftPart)
         addView(centerPart)
         addView(rightPart)
-        setBackgroundColor(Color.TRANSPARENT)
-        invalidate()
+        /** Setting background transparent*/
+        background = Color.TRANSPARENT.toDrawable()
     }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
@@ -123,11 +129,11 @@ class CurvedBottomNavigationView @JvmOverloads constructor(
         )
     }
 
-    fun fill(clear: Boolean, vararg item: com.karen.curvedbottomnavigationview.NavigationItem) {
-        if (clear) items.clear()
-        item.forEach {
-            items.add(
-                NavifartionItemView(
+    fun fill(clear: Boolean, vararg items: NavigationItem) {
+        if (clear) this.items.clear()
+        items.forEach {
+            this.items.add(
+                NavigationItemView(
                     context,
                     item = it
                 )
@@ -140,11 +146,11 @@ class CurvedBottomNavigationView @JvmOverloads constructor(
         if (items.size == 2 || items.size == 4) {
             createViews()
         } else {
-            Toast.makeText(context, "Items count should be 2 or 4", Toast.LENGTH_SHORT)
-                .show()
+            throw IllegalArgumentException("items count must be 2 or 4")
         }
     }
 
+    /** Adding created items to left and right parts*/
     private fun createViews() {
         items.forEachIndexed { i, item ->
             val view = item.apply {
@@ -201,26 +207,43 @@ class CurvedBottomNavigationView @JvmOverloads constructor(
         this.listener = listener
     }
 
-    fun setCenterItem(icon: Int) {
+    fun setCenterItemIcon(@DrawableRes icon: Int) {
         fab.setImageResource(icon)
     }
 
-    fun setItemActiveColor(string: String) {
+    fun setItemActiveColor(color: String) {
         items.forEach {
-            it.activeColor = Color.parseColor(string)
+            it.activeColor = Color.parseColor(color)
         }
     }
 
-    fun setItemActiveColor(resId: Int) {
+    fun setItemActiveColor(@ColorRes resId: Int) {
         items.forEach {
             it.activeColor = ContextCompat.getColor(context, resId)
         }
     }
 
+    fun setItemInactiveColor(color: String) {
+        items.forEach {
+            it.setInactiveColor(Color.parseColor(color))
+        }
+    }
+
+    fun setItemInactiveColor(resId: Int) {
+        items.forEach {
+            it.setInactiveColor(ContextCompat.getColor(context, resId))
+        }
+    }
+
+    fun setBackgroundColor(color: String) {
+        setBackgroundColor(Color.parseColor(color))
+    }
+
     override fun setBackgroundColor(color: Int) {
         leftPart.setBackgroundColor(color)
-        upCurve.setBackgroundColor(color)
         rightPart.setBackgroundColor(color)
+        centerSquare.setBackgroundColor(color)
+        upCurve.setBackgroundColor(color)
     }
 
     private fun setActiveItem(index: Int) {
