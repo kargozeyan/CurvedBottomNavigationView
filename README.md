@@ -5,6 +5,9 @@ CurvedBottomNavigationView is Android Library fully written in Kotlin. Currently
 type of curve(UP) but I am planning to intergrate also DOWN curve
 ## Preview
 
+<img src="https://imgur.com/ehmeRpR.png" height="480" style="float:left;"/>
+<img src="https://imgur.com/j3FpW4t.png" height="480" style="float:left;"/>
+                                                  
 ## Download
 Gradle(Project)
 ``` Gradle
