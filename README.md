@@ -20,7 +20,7 @@ allprojects {
 ```
 Gradle(App)
 ``` Gradle
-implementation 'com.github.kargoz:CurvedBottomNavigationView:1.0.1'
+implementation 'com.github.kargoz:CurvedBottomNavigationView:1.1.1'
 ```
 ## Usage
 Add CurvedBottomNavigationView to your layout 
