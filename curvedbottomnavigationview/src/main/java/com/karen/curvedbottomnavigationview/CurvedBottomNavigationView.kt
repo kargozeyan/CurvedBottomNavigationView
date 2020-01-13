@@ -363,7 +363,7 @@ class CurvedBottomNavigationView @JvmOverloads constructor(
         paint.color = color
     }
 
-    private fun setActiveItem(index: Int) {
+    fun setActiveItem(index: Int) {
         items.forEach {
             it.activeMode(false)
         }
