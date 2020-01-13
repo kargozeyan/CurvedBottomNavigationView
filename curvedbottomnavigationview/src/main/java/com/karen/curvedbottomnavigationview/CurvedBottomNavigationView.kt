@@ -1,8 +1,8 @@
 package com.karen.curvedbottomnavigationview
 
 import android.animation.AnimatorInflater
-import android.annotation.SuppressLint
 import android.content.Context
+import android.content.res.ColorStateList
 import android.graphics.*
 import android.graphics.drawable.Drawable
 import android.os.Build
@@ -12,7 +12,10 @@ import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
-import android.widget.*
+import android.widget.FrameLayout
+import android.widget.ImageView
+import android.widget.LinearLayout
+import android.widget.RelativeLayout
 import androidx.annotation.ColorRes
 import androidx.annotation.DrawableRes
 import androidx.core.content.ContextCompat
@@ -348,11 +351,16 @@ class CurvedBottomNavigationView @JvmOverloads constructor(
         setBackgroundColor(Color.parseColor(color))
     }
 
+    fun setCenterButtonBackgroundColor(color: String) {
+        fab.backgroundTintList = ColorStateList.valueOf(Color.parseColor(color))
+    }
+
+    fun setCenterButtonBackgroundColor(color: Int) {
+        fab.backgroundTintList = ColorStateList.valueOf(ContextCompat.getColor(context, color))
+    }
+
     override fun setBackgroundColor(color: Int) {
-        leftPart.setBackgroundColor(color)
-        rightPart.setBackgroundColor(color)
-        centerSquare.setBackgroundColor(color)
-        upCurve.setBackgroundColor(color)
+        paint.color = color
     }
 
     private fun setActiveItem(index: Int) {

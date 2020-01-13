@@ -33,6 +33,7 @@ class MainActivity : AppCompatActivity() {
         curved_bnv.setCenterItemIcon(R.drawable.ic_android_black_24dp)
         curved_bnv.setItemInactiveColor("#abc123")
         curved_bnv.setItemActiveColor("#def456")
+        curved_bnv.setCenterButtonBackgroundColor(R.color.colorPrimary)
         curved_bnv.setOnItemClickListener(object : OnItemClickedListener {
             override fun onItemClicked(item: NavigationItem) {
 
