@@ -12,10 +12,7 @@ import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
-import android.widget.FrameLayout
-import android.widget.ImageView
-import android.widget.LinearLayout
-import android.widget.RelativeLayout
+import android.widget.*
 import androidx.annotation.ColorRes
 import androidx.annotation.DrawableRes
 import androidx.core.content.ContextCompat
@@ -38,27 +35,19 @@ class CurvedBottomNavigationView @JvmOverloads constructor(
 
     /** Constant values*/
     companion object {
-        const val CRADLE = 5
-        const val FAB_RADIUS = 64
+        const val CRADLE = 10
+        const val FAB_RADIUS = 56
         const val CURVE_WEIGHT = 7 * FAB_RADIUS / 4
-        const val CURVE_HEIGHT = 24
-        const val BAR_HEIGHT = 56
+        const val CURVE_HEIGHT = 18
+        const val BAR_HEIGHT = 62
         const val ITEM_MARGIN = 2
+        const val SHADOW_RADIUS = 36f
     }
 
     private enum class Where {
         LEFT, CENTER, RIGHT
     }
 
-    private var upCurve: UpCurveView =
-        UpCurveView(
-            context
-        ).apply {
-            layoutParams = LayoutParams(CURVE_WEIGHT.dp, CURVE_HEIGHT.dp).apply {
-                addRule(CENTER_HORIZONTAL, TRUE)
-                setBackgroundColor(Color.WHITE)
-            }
-        }
     private var centerSquare = View(context).apply {
         layoutParams = FrameLayout.LayoutParams(MATCH_PARENT, BAR_HEIGHT.dp).apply {
             gravity = Gravity.BOTTOM
@@ -67,7 +56,8 @@ class CurvedBottomNavigationView @JvmOverloads constructor(
     }
 
     private var fabLp = FrameLayout.LayoutParams(FAB_RADIUS.dp, FAB_RADIUS.dp).apply {
-        gravity = Gravity.CENTER
+        gravity = Gravity.CENTER_HORIZONTAL
+        setMargins(0, SHADOW_RADIUS.toInt() + CRADLE.dp, 0, 0)
         stateListAnimator =
             AnimatorInflater.loadStateListAnimator(context, R.animator.elevation)
 
@@ -120,15 +110,17 @@ class CurvedBottomNavigationView @JvmOverloads constructor(
         strokeWidth = 0f
         color = Color.parseColor("#123456")
         style = Paint.Style.FILL
+        setShadowLayer(SHADOW_RADIUS, 0f, 0f, Color.GRAY)
     }
 
     var curveW = CURVE_WEIGHT.dp.toFloat()
-    var curveH = CURVE_HEIGHT.dp.toFloat()
+    var curveH = CURVE_HEIGHT.dp.toFloat() + SHADOW_RADIUS
     var barHeight = BAR_HEIGHT.dp.toFloat()
 
     init {
         addView(leftPart)
         addView(rightPart)
+        setLayerType(LAYER_TYPE_SOFTWARE, paint)
         addView(centerPart)
         /** Setting background transparent */
         background = Color.TRANSPARENT.toDrawable()
@@ -139,7 +131,10 @@ class CurvedBottomNavigationView @JvmOverloads constructor(
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
         super.onMeasure(
             MeasureSpec.makeMeasureSpec(resources.displayMetrics.widthPixels, MeasureSpec.EXACTLY),
-            MeasureSpec.makeMeasureSpec(CURVE_HEIGHT.dp + BAR_HEIGHT.dp, MeasureSpec.EXACTLY)
+            MeasureSpec.makeMeasureSpec(
+                CURVE_HEIGHT.dp + BAR_HEIGHT.dp + SHADOW_RADIUS.toInt(),
+                MeasureSpec.EXACTLY
+            )
         )
     }
 
@@ -173,14 +168,14 @@ class CurvedBottomNavigationView @JvmOverloads constructor(
         val rightUp = PointF(w, curveH)
         val rightDown = PointF(w, h)
 
-        val fStart = PointF(w / 2 - curveW / 2, curveH)
+        val fStart = PointF(w / 2 - curveW / 2f, curveH)
         val centreY = h / 2f
-        val fEnd = PointF(w / 2, 0f)
+        val fEnd = PointF(w / 2, SHADOW_RADIUS)
         val fControl1 = PointF((fStart.x + fEnd.x) / 2, fStart.y)
         val fControl2 = PointF(fControl1.x, fEnd.y)
 
         val sStart = fEnd
-        val sEnd = PointF(w / 2 + curveW / 2, curveH)
+        val sEnd = PointF(w / 2 + curveW / 2f, curveH)
         val sControl1 = PointF((sStart.x + sEnd.x) / 2, sStart.y)
         val sControl2 = PointF(sControl1.x, sEnd.y)
 
@@ -375,38 +370,56 @@ class CurvedBottomNavigationView @JvmOverloads constructor(
         attrs: AttributeSet? = null,
         defStyleAttr: Int = 0,
         var item: NavigationItem
-    ) : ImageView(context, attrs, defStyleAttr) {
-
+    ) : FrameLayout(context, attrs, defStyleAttr) {
         companion object {
+
             val defBackgroundColor = Color.WHITE.toDrawable()
-            val defScaleType = ScaleType.CENTER_INSIDE
+            val defScaleType = ImageView.ScaleType.CENTER
             const val defActiveColor = Color.CYAN
             const val defInactiveColor = Color.RED
         }
 
         var activeColor: Int =
             defActiveColor
+
         var inactiveColor: Int = defInactiveColor
         private var dr: Drawable
-
-        init {
+        private var icon = ImageView(context).apply {
             scaleType =
                 defScaleType
-            background =
-                defBackgroundColor
+
+
+            setImageResource(item.icon)
+            dr = drawable
+            layoutParams = LayoutParams(36.dp, 36.dp).apply {
+                gravity = Gravity.CENTER
+                setMargins(0, 0, 0, 5.dp)
+            }
+        }
+        private var text = TextView(context).apply {
+            setTextSize(TypedValue.COMPLEX_UNIT_SP, 12f)
+            text = item.text
+            layoutParams = LayoutParams(WRAP_CONTENT, WRAP_CONTENT).apply {
+                setMargins(0, 0, 0, 5.dp)
+                gravity = Gravity.BOTTOM or Gravity.CENTER_HORIZONTAL
+            }
+        }
+
+        init {
+            addView(icon)
+            addView(text)
+            background = defBackgroundColor
             val outValue = TypedValue()
             getContext().theme
                 .resolveAttribute(android.R.attr.selectableItemBackground, outValue, true)
             setBackgroundResource(outValue.resourceId)
             isClickable = true
             isFocusable = true
-            setImageResource(item.icon)
-            dr = drawable
         }
 
         fun activeMode(isActive: Boolean) {
             if (isActive) {
-                val newDr = drawable.constantState?.newDrawable()
+                val newDr = icon.drawable.constantState?.newDrawable()
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                     newDr?.mutate()?.colorFilter =
                         BlendModeColorFilter(activeColor, BlendMode.SRC_ATOP)
@@ -414,15 +427,17 @@ class CurvedBottomNavigationView @JvmOverloads constructor(
                     @Suppress("DEPRECATION")
                     newDr?.mutate()?.setColorFilter(activeColor, PorterDuff.Mode.SRC_ATOP)
                 }
-                setImageDrawable(newDr)
+                text.setTextColor(activeColor)
+                icon.setImageDrawable(newDr)
             } else {
-                setImageDrawable(dr)
+                text.setTextColor(inactiveColor)
+                icon.setImageDrawable(dr)
             }
         }
 
         fun setInActiveColor(value: Int) {
             inactiveColor = value
-            val newDr = drawable.constantState?.newDrawable()
+            val newDr = icon.drawable.constantState?.newDrawable()
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                 newDr?.mutate()?.colorFilter = BlendModeColorFilter(value, BlendMode.SRC_ATOP)
             } else {
@@ -432,7 +447,8 @@ class CurvedBottomNavigationView @JvmOverloads constructor(
             if (newDr != null) {
                 dr = newDr
             }
-            setImageDrawable(newDr)
+            icon.setImageDrawable(newDr)
+            text.setTextColor(value)
         }
     }
 }
