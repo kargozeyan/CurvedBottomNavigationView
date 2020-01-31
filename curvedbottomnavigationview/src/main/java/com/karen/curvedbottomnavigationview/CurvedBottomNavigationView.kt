@@ -69,6 +69,14 @@ class CurvedBottomNavigationView @JvmOverloads constructor(
         isClickable = true
         isFocusable = true
         layoutParams = fabLp
+        setOnClickListener {
+            if (!isCenterItemClicked) {
+                isCenterItemClicked = true
+                listener?.onCenterItemClicked()
+            } else {
+                listener?.onCenterItemReClicked()
+            }
+        }
     }
 
     /** Creating 3 parts of bar*/
@@ -113,8 +121,8 @@ class CurvedBottomNavigationView @JvmOverloads constructor(
         setShadowLayer(SHADOW_RADIUS, 0f, 0f, Color.GRAY)
     }
 
-    var curveW = CURVE_WEIGHT.dp.toFloat()
-    var curveH = CURVE_HEIGHT.dp.toFloat() + SHADOW_RADIUS
+    private var curveW = CURVE_WEIGHT.dp.toFloat()
+    private var curveH = CURVE_HEIGHT.dp.toFloat() + SHADOW_RADIUS
     var barHeight = BAR_HEIGHT.dp.toFloat()
 
     init {

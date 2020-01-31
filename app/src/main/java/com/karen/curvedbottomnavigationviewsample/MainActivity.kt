@@ -1,12 +1,11 @@
 package com.karen.curvedbottomnavigationviewsample
 
 import android.os.Bundle
+import android.util.Log
 import android.widget.SeekBar
 import androidx.appcompat.app.AppCompatActivity
-
 import com.karen.curvedbottomnavigationview.NavigationItem
 import com.karen.curvedbottomnavigationview.OnItemClickedListener
-import com.karen.curvedbottomnavigationview.dp
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
@@ -44,11 +43,11 @@ class MainActivity : AppCompatActivity() {
             }
 
             override fun onCenterItemClicked() {
-                /** Handle CenterItem Clicked*/
+                Log.e("TAG", "AAAA")
             }
 
             override fun onCenterItemReClicked() {
-                /** Handle CenterItem ReClicked*/
+                Log.e("TAG", "BBBB")
             }
         })
 
