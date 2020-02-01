@@ -70,6 +70,8 @@ class CurvedBottomNavigationView @JvmOverloads constructor(
         isFocusable = true
         layoutParams = fabLp
         setOnClickListener {
+            clickedItem = null
+            makeInactiveAll()
             if (!isCenterItemClicked) {
                 isCenterItemClicked = true
                 listener?.onCenterItemClicked()
@@ -324,6 +326,12 @@ class CurvedBottomNavigationView @JvmOverloads constructor(
 
     fun setCenterItemIcon(@DrawableRes icon: Int) {
         fab.setImageResource(icon)
+    }
+
+    fun makeInactiveAll() {
+        items.forEach {
+            it.activeMode(false)
+        }
     }
 
     fun setItemActiveColor(color: String) {

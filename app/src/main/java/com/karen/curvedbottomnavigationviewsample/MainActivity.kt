@@ -35,19 +35,19 @@ class MainActivity : AppCompatActivity() {
         curved_bnv.setCenterButtonBackgroundColor(R.color.colorPrimary)
         curved_bnv.setOnItemClickListener(object : OnItemClickedListener {
             override fun onItemClicked(item: NavigationItem) {
-
+                Log.e("TAG", "It cl")
             }
 
             override fun onItemReClicked(item: NavigationItem) {
-                /** Handle item ReClicked*/
+                Log.e("TAG", "it cl re")
             }
 
             override fun onCenterItemClicked() {
-                Log.e("TAG", "AAAA")
+                Log.e("TAG", "ce it cl ")
             }
 
             override fun onCenterItemReClicked() {
-                Log.e("TAG", "BBBB")
+                Log.e("TAG", "ce it cl re")
             }
         })
 
