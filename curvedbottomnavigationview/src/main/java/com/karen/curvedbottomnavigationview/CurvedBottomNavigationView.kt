@@ -70,8 +70,6 @@ class CurvedBottomNavigationView @JvmOverloads constructor(
         isFocusable = true
         layoutParams = fabLp
         setOnClickListener {
-            clickedItem = null
-            makeInactiveAll()
             if (!isCenterItemClicked) {
                 isCenterItemClicked = true
                 listener?.onCenterItemClicked()
