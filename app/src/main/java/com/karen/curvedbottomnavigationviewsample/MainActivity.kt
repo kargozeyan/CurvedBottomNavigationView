@@ -14,10 +14,10 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         curved_bnv.fill(
-            true, NavigationItem("Text 1", R.drawable.ic_android_black_24dp),
-            NavigationItem("Text 2", R.drawable.ic_android_black_24dp),
-            NavigationItem("Text 3", R.drawable.ic_android_black_24dp),
-            NavigationItem("Text 4", R.drawable.ic_android_black_24dp)
+            true, NavigationItem("Text 1", R.drawable.ic_android_black_24dp,21312),
+            NavigationItem("Text 2", R.drawable.ic_android_black_24dp, 3212132),
+            NavigationItem("Text 3", R.drawable.ic_android_black_24dp,231),
+            NavigationItem("Text 4", R.drawable.ic_android_black_24dp,3)
         )
         fab_radius.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
